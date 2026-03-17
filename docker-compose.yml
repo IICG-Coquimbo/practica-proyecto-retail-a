@@ -10,7 +10,7 @@ services:
       - .:/home/jovyan/work
     environment:
       - JUPYTER_TOKEN=
-      - JUPYTER_PASSWORD=""
+      - JUPYTER_PASSWORD="iicg2026"
       - JUPYTER_ALLOW_INSECURE_WRITES=true
 
   # Base de Datos NoSQL
