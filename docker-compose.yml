@@ -1,28 +1,36 @@
 services:
-  # Entorno de trabajo con Python y Spark pre-instalado
+  # Contenedor principal con Jupyter, Spark y entorno visual
   workspace:
     build: .
     container_name: bigdata_workspace
+    platform: linux/amd64
     ports:
-      - "8888:8888" # Jupyter Lab
-      - "4040:4040" # Panel de control de Spark
+      - "8888:8888"   # Jupyter Lab
+      - "4040:4040"   # Interfaz web de Spark
+      - "5900:5900"   # Acceso VNC al escritorio
+      - "6080:6080"   # Acceso noVNC desde navegador
     volumes:
       - .:/home/jovyan/work
     environment:
       - JUPYTER_TOKEN=
-      - JUPYTER_PASSWORD="iicg2026"
+      - JUPYTER_PASSWORD=iicg2026
       - JUPYTER_ALLOW_INSECURE_WRITES=true
+      - DISPLAY=:99
+    shm_size: "2gb"
+    depends_on:
+      - mongodb
 
-  # Base de Datos NoSQL
-  database:
+  # Base de datos MongoDB
+  mongodb:
     image: mongo:latest
     container_name: bigdata_mongodb
+    platform: linux/amd64
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-      
-  # EL SERVICIO QUE FALTA PARA EL PUERTO 8081
+
+  # Interfaz web para visualizar MongoDB
   admin-db:
     image: mongo-express:latest
     container_name: bigdata_ui
@@ -30,10 +38,9 @@ services:
     ports:
       - "8081:8081"
     environment:
-      # Se conecta al servicio 'database' definido arriba
-      - ME_CONFIG_MONGODB_URL=mongodb://database:27017/
+      - ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017/
     depends_on:
-      - database
+      - mongodb
 
 volumes:
   mongo_data:
