@@ -1,4 +1,35 @@
+<<<<<<< HEAD
 # Imagen base con Jupyter + PySpark (Spark 3.5.x)
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+FROM jupyter/pyspark-notebook:latest
+
+USER root
+
+# 1. Instalar dependencias base y configurar el repo de Google Chrome
+# Nota: Se han unido las lÃ­neas con \ correctamente
+RUN apt-get update && apt-get install -y wget gnupg2 curl && \
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+
+# 2. Instalar Google Chrome y librerÃ­as de soporte
+RUN apt-get update && apt-get install -y \
+    google-chrome-stable \
+    libnss3 \
+    libgbm1 \
+    libasound2 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# 3. Instalar librerÃ­as de Python
+RUN pip install selenium pymongo webdriver-manager
+
+=======
+# Imagen base: trae Jupyter + Python + PySpark ya configurado
+=======
+# Imagen base con Jupyter + PySpark
+>>>>>>> 3d5e9cb7c5d6b90831e8ee1a9430709166f500d6
+>>>>>>> 0fb6a3f165795ace3d0d7c02f47592fb3fcb6c2c
 FROM jupyter/pyspark-notebook:latest
 
 USER root
@@ -27,6 +58,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+<<<<<<< HEAD
 # 2. Instalación de JARs: Versión 10.3.0 (Compatible con Spark 3.5)
 # Limpiamos la carpeta primero para que no queden versiones viejas chocando
 RUN rm -f /usr/local/spark/jars/mongo-spark-connector* && \
@@ -40,6 +72,14 @@ RUN wget https://repo1.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_
     wget https://repo1.maven.org/maven2/org/mongodb/bson-record-codec/4.11.1/bson-record-codec-4.11.1.jar -P /usr/local/spark/jars/
 
 # 3. Instalación de librerías Python
+=======
+<<<<<<< HEAD
+# Vuelve al usuario normal de Jupyter (buena práctica de seguridad)
+>>>>>>> 8fd6febbced5157e0ad155e84b9eabe5f03842d1
+USER jovyan
+=======
+# Instala librerÃ­as Python para scraping y MongoDB
+>>>>>>> 0fb6a3f165795ace3d0d7c02f47592fb3fcb6c2c
 RUN pip install selenium pymongo webdriver-manager pandas
 
 # 4. Configuración de entorno y archivos
@@ -53,6 +93,12 @@ RUN sed -i 's/\r$//' /usr/local/bin/start-vnc.sh \
 
 EXPOSE 8888 5900 6080 4040
 
+<<<<<<< HEAD
 # Iniciamos como root para evitar el error de setuid de la sesión anterior
 USER root
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+=======
+# Inicia supervisord
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+>>>>>>> 3d5e9cb7c5d6b90831e8ee1a9430709166f500d6
+>>>>>>> 0fb6a3f165795ace3d0d7c02f47592fb3fcb6c2c
