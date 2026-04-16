@@ -1,0 +1,189 @@
+[
+  {
+    "identificador": "Envío rápido",
+    "valor": "$ 3.593",
+    "valor_limpio": 3593.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700ec"
+  },
+  {
+    "identificador": "CARNICERIA Escalopa de Ganso Cat-V",
+    "valor": "$ 16.990",
+    "valor_limpio": 16990.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700ed"
+  },
+  {
+    "identificador": "Chuleta de Cerdo Vetada a Granel",
+    "valor": "$ 5.390",
+    "valor_limpio": 5390.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700ee"
+  },
+  {
+    "identificador": "Expertos en Carnes",
+    "valor": "$ 7.890",
+    "valor_limpio": 7890.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700ef"
+  },
+  {
+    "identificador": "Chuleta de Cerdo Centro a Granel",
+    "valor": "$ 5.890",
+    "valor_limpio": 5890.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f0"
+  },
+  {
+    "identificador": "Envío rápido",
+    "valor": "$ 3.690",
+    "valor_limpio": 3690.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f1"
+  },
+  {
+    "identificador": "Pechuga de Pavo Deshuesada Malla Peso Variable",
+    "valor": "$ 9.789",
+    "valor_limpio": 9789.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f2"
+  },
+  {
+    "identificador": "Envío rápido",
+    "valor": "$ 5.690",
+    "valor_limpio": 5690.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f3"
+  },
+  {
+    "identificador": "CANTO DEL GALLO",
+    "valor": "$ 6.190",
+    "valor_limpio": 6190.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f4"
+  },
+  {
+    "identificador": "CANTO DEL GALLO",
+    "valor": "$ 6.190",
+    "valor_limpio": 6190.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f5"
+  },
+  {
+    "identificador": "Envío rápido",
+    "valor": "$ 3.790",
+    "valor_limpio": 3790.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f6"
+  },
+  {
+    "identificador": "Expertos en Carnes",
+    "valor": "$ 4.890",
+    "valor_limpio": 4890.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f7"
+  },
+  {
+    "identificador": "Expertos en Carnes",
+    "valor": "$ 2.390",
+    "valor_limpio": 2390.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f8"
+  },
+  {
+    "identificador": "Pack Fósforos de Seguridad",
+    "valor": "$ 1.590",
+    "valor_limpio": 1590.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700f9"
+  },
+  {
+    "identificador": "Expertos en Carnes",
+    "valor": "$ 7.990",
+    "valor_limpio": 7990.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700fa"
+  },
+  {
+    "identificador": "Expertos en Carnes",
+    "valor": "$ 9.990",
+    "valor_limpio": 9990.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700fb"
+  },
+  {
+    "identificador": "Expertos en Carnes",
+    "valor": "$ 7.490",
+    "valor_limpio": 7490.0,
+    "categoria": "Carnes",
+    "fecha_captura": "2026-04-16 03:29:58",
+    "grupo": "Vannessa",
+    "tienda": "Tottus",
+    "url": "https://www.tottus.cl/tottus-cl/lista/CATG27069/Carnes",
+    "_id": "69e057b6c02433dd79b700fc"
+  }
+]
