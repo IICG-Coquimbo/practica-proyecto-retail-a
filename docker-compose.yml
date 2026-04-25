@@ -6,6 +6,7 @@ services:
     ports:
       - "8888:8888" # Jupyter Lab
       - "4040:4040" # Panel de control de Spark
+      - "6080:6080" 
     volumes:
       - .:/home/jovyan/work
     environment:
