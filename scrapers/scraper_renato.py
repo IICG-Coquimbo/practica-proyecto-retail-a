@@ -10,14 +10,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# Limpieza para evitar bloqueos en el contenedor (Arreglo de infraestructura)
+# Limpieza para evitar bloqueos en el contenedor 
 os.system("pkill -9 chrome")
 os.system("pkill -9 chromedriver")
 os.system("rm -rf /tmp/.com.google.Chrome.*")
 os.system("rm -rf /tmp/.org.chromium.Chromium.*")
 print("🧹 Limpieza de procesos completada. Motor listo para Unimarc.")
 
-# --- VARIABLES GENERALES (Alineadas con el equipo Ave Mayo) ---
+# --- VARIABLES GENERALES ---
 NOMBRE_GRUPO = "Ave Mayo"
 SUPERMERCADO = "Unimarc"
 URL_BASE = "https://www.unimarc.cl/category/despensa"
