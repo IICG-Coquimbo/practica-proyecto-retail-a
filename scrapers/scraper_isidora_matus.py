@@ -1,151 +1,117 @@
-# --- PASO 0: LIMPIEZA DE PROCESOS (Estandarizado) ---
 import os
-import time
-import re
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
 from pymongo import MongoClient
 
-# Limpieza para evitar conflictos en el entorno de ejecución
-os.system("pkill -9 chrome")
-os.system("pkill -9 chromedriver")
-os.system("rm -rf /tmp/.com.google.Chrome.*")
-os.system("rm -rf /tmp/.org.chromium.Chromium.*")
-print("🧹 Limpieza de procesos completada. Motor listo para Cugat.")
-
-# --- VARIABLES GENERALES (Alineadas con el Cluster de Felipe) ---
+# --- CONFIGURACIÓN ---
 NOMBRE_GRUPO = "Ave Mayo"
 ENCARGADA = "Isidora Matus"
 SUPERMERCADO = "Cugat"
-URL_BASE = "https://cugat.cl/categoria-producto/despensa/"
-
-# URI de Atlas del grupo (Cluster de Felipe)
 MONGO_URI = "mongodb+srv://FelipeGutierrez:pepe1516@cluster0.6zjv54l.mongodb.net/?appName=Cluster0"
 
-# Diccionario de marcas para estandarización de datos
-MARCAS_CONOCIDAS = [
-    "LINDEROS", "TUCAPEL", "MARIPOSA", "OTUNA", "ARUNA", "LOS GRANOS", "MAGGI", 
-    "DON JUAN", "TRAVERSO", "ESMERALDA", "LOBOS", "MIRAFLORES", "HELLMANNS", 
-    "HELLMANN´S", "BONANZA", "PARRAL", "YBARRA", "COLISEO", "ROMANO", "MAKAROMA", 
-    "WASIL", "EL MONTE", "TALLIANI", "LUCCHETTI", "ASTRA", "NATUREZZA", "SANTO TOMAS", 
-    "PASTANOVA", "MALLOA", "BANQUETE", "KRAFT", "MONT BLANC", "CISNE", "VAN CAMP´S", 
-    "VAN CAMP’S", "LOS CHINOS", "ABRIL", "COPIHUE", "LOS ANDES", "ALUFOIL", "ALUPLAST", 
-    "CAROZZI", "SAN JOSE", "TOSCANA", "GOURMET", "PERFECT CHOICE", "SELECTA", 
-    "IMPERIAL", "ACONCAGUA", "EDRA", "NATURA", "MAIZENA", "DROPA", "LEFERSA", 
-    "COLLICO", "AMBROSOLI", "VIVO", "DOS CABALLOS", "ROBINSON CRUSOE", "BIOSAL", 
-    "JB", "CHEF"
+URLS_OBJETIVO = [
+    "https://cugat.cl/categoria-producto/despensa/",
+    "https://cugat.cl/categoria-producto/carniceria/",
+    "https://cugat.cl/categoria-producto/fiambreria-embutidos-y-quesos/",
+    "https://cugat.cl/categoria-producto/lacteos/",
+    "https://cugat.cl/categoria-producto/bebidas-jugos-y-aguas/" 
 ]
 
-def extraer_marca(nombre_completo):
-    """Lógica para identificar la marca dentro del nombre del producto."""
-    nombre_upper = nombre_completo.upper()
-    for marca in MARCAS_CONOCIDAS:
-        if marca in nombre_upper:
-            return marca
-    return nombre_upper.split()[0].replace(',', '').strip()
+MARCAS_MAESTRAS = [
+    "TUCAPEL", "LUCCHETTI", "CAROZZI", "MAGGI", "LOBOS", "BANQUETE", "CHEF", "NATURA", "MIRAFLORES",
+    "BONANZA", "LOS GRANOS", "SANTO TOMAS", "TALLIANI", "ARUNA", "ABRIL", "EDRA", "VIVO", "ZUKO", "LIVEAN",
+    "DON JUAN", "HELLMANNS", "HELLMANN´S", "TRAVERSO", "JB", "GOURMET", "KRAFT", "BIOSAL",
+    "AGROSUPER", "SUPER POLLO", "SUPER CERDO", "SAN JORGE", "PF", "WINTER", "LA PREFERIDA", "MONTINA", 
+    "COLUN", "SOPROLE", "NESTLE", "SURLAT", "CALO", "LONCOLECHE", "QUILLAYES", "COCA COLA", "COCA-COLA", 
+    "PEPSI", "FANTA", "SPRITE", "KACHANTUN", "VITAL", "ANDINA", "WATT'S", "WATTS", "PAP", "BILZ", "KEM", 
+    "CRUSH", "BENEDICTINOS", "CASA OLIVA", "PURE LIFE", "CANADA DRY", "LIMON SODA", "SEVEN UP"
+]
 
-def ejecutar_extraccion():
+def extraer_precio_real(bloque):
+    try:
+        precio_tag = bloque.find('bdi')
+        if precio_tag:
+            nums = "".join(filter(str.isdigit, precio_tag.get_text()))
+            return int(nums) if nums else 0
+    except: return 0
+    return 0
+
+def ejecutar_mega_extraccion():
     datos_finales = []
     vistos = set()
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+    headers = {"User-Agent": "Mozilla/5.0"}
     
-    print(f"🚀 Iniciando extracción de {SUPERMERCADO} para el equipo {NOMBRE_GRUPO}...")
+    print(f"🚀 Iniciando captura para {ENCARGADA}...")
 
-    try:
-        # Detectar cantidad de páginas dinámicamente
-        res = requests.get(URL_BASE, headers=headers, timeout=15)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        paginas_tags = soup.find_all('a', class_='page-number')
-        max_paginas = max([int(p.get_text()) for p in paginas_tags if p.get_text().isdigit()]) if paginas_tags else 1
-        
-        for pagina_actual in range(1, max_paginas + 1):
-            print(f"🔍 PROCESANDO PÁGINA {pagina_actual} DE {max_paginas}...", end="\r")
-            
-            url_pag = f"{URL_BASE}page/{pagina_actual}/"
-            response = requests.get(url_pag, headers=headers)
-            soup_pag = BeautifulSoup(response.text, 'html.parser')
-            bloques = soup_pag.find_all('div', class_='product-small')
-
-            fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            for bloque in bloques:
-                try:
-                    name_tag = bloque.find('p', class_='product-title')
-                    nombre_raw = name_tag.get_text().strip() if name_tag else "N/A"
-                    nombre_limpio = " ".join(nombre_raw.split())
-                    
-                    if nombre_limpio in vistos or nombre_limpio == "N/A": continue
-                    vistos.add(nombre_limpio)
-
-                    # Procesamiento de Marca y Precio
-                    marca_txt = extraer_marca(nombre_limpio)
-                    price_wrapper = bloque.find('span', class_='price')
-                    precio_num = 0
-                    if price_wrapper:
-                        ins_tag = price_wrapper.find('ins')
-                        price_text = ins_tag.get_text() if ins_tag else price_wrapper.get_text()
-                        precio_num = int("".join(filter(str.isdigit, price_text.split('$')[-1])))
-
-                    # ESTRUCTURA DE ETIQUETAS ESTANDARIZADA (Alineada con el equipo)
-                    datos_finales.append({
-                        "identificador": nombre_limpio,
-                        "valor": float(precio_num),
-                        "fecha_capture": fecha_actual,
-                        "grupo": NOMBRE_GRUPO,
-                        "encargada_scraping": ENCARGADA,
-                        "nombre_producto": nombre_limpio,
-                        "precio": float(precio_num),
-                        "supermercado": SUPERMERCADO,
-                        "categoria": "Despensa",
-                        "marca": marca_txt,
-                        "precio_promedio": 0.0,  # Se actualiza al final
-                        "fecha_scraping": fecha_actual
-                    })
-                except:
-                    continue
-            
-            time.sleep(0.3)
-
-    except Exception as e:
-        print(f"❌ Error durante la extracción: {e}")
-
-    # --- GUARDADO EN MONGODB ATLAS Y VISUALIZACIÓN ---
-    if datos_finales:
-        # Calcular precio promedio antes de subir
-        df_final = pd.DataFrame(datos_finales)
-        promedio_val = df_final[df_final['valor'] > 0]['valor'].mean()
-        for item in datos_finales: 
-            item["precio_promedio"] = round(float(promedio_val), 2)
-
+    for url_seccion in URLS_OBJETIVO:
         try:
-            print(f"\n☁️ Subiendo {len(datos_finales)} registros al Cluster de Felipe...")
-            client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-            db = client["Canasta_db"]
-            coleccion = db["Retail_A"]
+            res = requests.get(url_seccion, headers=headers, timeout=10)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            paginas = soup.find_all('a', class_='page-number')
+            max_pag = max([int(p.get_text()) for p in paginas if p.get_text().isdigit()]) if paginas else 1
             
-            # Insertar datos evitando bloqueos
-            coleccion.insert_many(datos_finales, ordered=False)
-            print("✅ Sincronización exitosa con MongoDB Atlas.")
-        except Exception as e:
-            print(f"⚠️ Nota sobre la base de datos: {e}")
+            for p in range(1, max_pag + 1):
+                response = requests.get(f"{url_seccion}page/{p}/", headers=headers)
+                soup_pag = BeautifulSoup(response.text, 'html.parser')
+                bloques = soup_pag.find_all('div', class_='product-small')
+                fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Configuración de salida en consola (Pandas)
-        pd.set_option('display.max_columns', None)
+                for bloque in bloques:
+                    name_tag = bloque.find('p', class_='product-title')
+                    nombre = " ".join(name_tag.get_text().split()) if name_tag else "N/A"
+                    if nombre in vistos or nombre == "N/A": continue
+                    vistos.add(nombre)
+
+                    cat_tag = bloque.find('p', class_='product-cat')
+                    categoria_limpia = " ".join(cat_tag.get_text().split()) if cat_tag else "Varios"
+                    valor_num = extraer_precio_real(bloque)
+                    if valor_num == 0 or valor_num > 150000: continue 
+
+                    nombre_up = nombre.upper()
+                    marca_encontrada = "OTRA"
+                    for m in MARCAS_MAESTRAS:
+                        if m in nombre_up:
+                            marca_encontrada = m
+                            break
+
+                    datos_finales.append({
+                        "identificador": nombre, "valor": valor_num, "supermercado": SUPERMERCADO,
+                        "categoria": categoria_limpia, "grupo": NOMBRE_GRUPO, "fecha_scraping": fecha_actual,
+                        "marca": marca_encontrada, "encargada_scraping": ENCARGADA
+                    })
+                print(f"📂 Procesando: {url_seccion.split('/')[-2]}... ({len(datos_finales)} items)", end="\r")
+        except: continue
+
+    if datos_finales:
+        df = pd.DataFrame(datos_finales)
+        
+        # --- SUBIDA A MONGO ATLAS ---
+        try:
+            client = MongoClient(MONGO_URI)
+            db = client["Canasta_db"]["Retail_A"]
+            db.delete_many({"encargada_scraping": ENCARGADA}) 
+            db.insert_many(df.to_dict('records'), ordered=False)
+            status_mongo = "✅ REGISTRADOS EN MONGO ATLAS"
+        except Exception as e:
+            status_mongo = f"❌ ERROR ATLAS: {e}"
+
+        # --- REPORTE DETALLADO DE PRODUCTOS ---
+        # Configuramos pandas para que no corte las columnas y muestre todo
+        pd.set_option('display.max_rows', None)
+        pd.set_option('display.max_colwidth', None)
         pd.set_option('display.width', 1000)
-        
-        print("\n" + "="*120)
-        print(f"📊 REPORTE DE CAPTURA - {ENCARGADA.upper()} | EQUIPO: {NOMBRE_GRUPO}")
-        print("="*120)
-        print(df_final.tail(15).to_string(index=False))
-        print("="*120)
-        print(f"⭐ RESUMEN: {len(df_final)} productos | Promedio: ${promedio_val:,.0f}".replace(',', '.'))
-        
-    else:
-        print("⚠️ No se obtuvieron datos para procesar.")
-    
-    return datos_finales
+
+        print("\n\n" + "═"*100)
+        print(f"📋 LISTADO COMPLETO DE PRODUCTOS CAPTURADOS POR: {ENCARGADA}")
+        print("═"*100)
+        # Imprime solo el Identificador (Nombre), Marca y Valor
+        print(df[['identificador', 'marca', 'valor']].to_string(index=False))
+        print("═"*100)
+        print(f"📊 ESTADO: {status_mongo}")
+        print(f"🎯 TOTAL PRODUCTOS: {len(df)}")
+        print("═"*100)
 
 if __name__ == "__main__":
-    ejecutar_extraccion()
+    ejecutar_mega_extraccion()
