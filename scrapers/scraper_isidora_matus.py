@@ -1,32 +1,37 @@
-import os
 import requests
-import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
+import pandas as pd
+import time
 from pymongo import MongoClient
 
 # --- CONFIGURACIÓN ---
-NOMBRE_GRUPO = "Ave Mayo"
+MONGO_URI = "mongodb://database:27017/" 
+HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+
 ENCARGADA = "Isidora Matus"
 SUPERMERCADO = "Cugat"
-MONGO_URI = "mongodb+srv://FelipeGutierrez:pepe1516@cluster0.6zjv54l.mongodb.net/?appName=Cluster0"
 
 URLS_OBJETIVO = [
     "https://cugat.cl/categoria-producto/despensa/",
     "https://cugat.cl/categoria-producto/carniceria/",
     "https://cugat.cl/categoria-producto/fiambreria-embutidos-y-quesos/",
     "https://cugat.cl/categoria-producto/lacteos/",
-    "https://cugat.cl/categoria-producto/bebidas-jugos-y-aguas/" 
+    "https://cugat.cl/categoria-producto/bebidas-jugos-y-aguas/"
 ]
 
+# Lista extendida para minimizar los "OTRA"
 MARCAS_MAESTRAS = [
     "TUCAPEL", "LUCCHETTI", "CAROZZI", "MAGGI", "LOBOS", "BANQUETE", "CHEF", "NATURA", "MIRAFLORES",
     "BONANZA", "LOS GRANOS", "SANTO TOMAS", "TALLIANI", "ARUNA", "ABRIL", "EDRA", "VIVO", "ZUKO", "LIVEAN",
-    "DON JUAN", "HELLMANNS", "HELLMANN´S", "TRAVERSO", "JB", "GOURMET", "KRAFT", "BIOSAL",
-    "AGROSUPER", "SUPER POLLO", "SUPER CERDO", "SAN JORGE", "PF", "WINTER", "LA PREFERIDA", "MONTINA", 
-    "COLUN", "SOPROLE", "NESTLE", "SURLAT", "CALO", "LONCOLECHE", "QUILLAYES", "COCA COLA", "COCA-COLA", 
-    "PEPSI", "FANTA", "SPRITE", "KACHANTUN", "VITAL", "ANDINA", "WATT'S", "WATTS", "PAP", "BILZ", "KEM", 
-    "CRUSH", "BENEDICTINOS", "CASA OLIVA", "PURE LIFE", "CANADA DRY", "LIMON SODA", "SEVEN UP"
+    "DON JUAN", "HELLMANNS", "HELLMANN´S", "TRAVERSO", "JB", "GOURMET", "KRAFT", "BIOSAL", "AGROSUPER", 
+    "SUPER POLLO", "SUPER CERDO", "SAN JORGE", "PF", "WINTER", "LA PREFERIDA", "MONTINA", "COLUN", 
+    "SOPROLE", "NESTLE", "SURLAT", "CALO", "LONCOLECHE", "QUILLAYES", "COCA COLA", "COCA-COLA", "PEPSI", 
+    "FANTA", "SPRITE", "KACHANTUN", "VITAL", "ANDINA", "WATT'S", "WATTS", "PAP", "BILZ", "KEM", "CRUSH", 
+    "BENEDICTINOS", "CASA OLIVA", "PURE LIFE", "CANADA DRY", "LIMON SODA", "SEVEN UP",
+    "LINDEROS", "MARIPOSA", "OTUNA", "COPITA", "YANINE", "COPIHUE", "ESMERALDA", "YBARRA", "COLISEO", 
+    "ROMANO", "MAKAROMA", "PASTANOVA", "WASIL", "EL MONTE", "ASTRA", "NATUREZZA", "MALLOA", "MONT BLANC", 
+    "CISNE", "VAN CAMP", "VAN CAMP´S", "LOS CHINOS", "PARRAL", "DON VITTORIO"
 ]
 
 def extraer_precio_real(bloque):
@@ -39,24 +44,33 @@ def extraer_precio_real(bloque):
     return 0
 
 def ejecutar_mega_extraccion():
+    print(f"🚀 Iniciando extracción para {ENCARGADA}...")
+    
+    try:
+        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+        db = client["Canasta_db"]
+        collection = db["Retail_A"]
+        client.server_info()
+    except Exception as e:
+        print(f"❌ Error de conexión: {e}")
+        return
+
     datos_finales = []
     vistos = set()
-    headers = {"User-Agent": "Mozilla/5.0"}
-    
-    print(f"🚀 Iniciando captura para {ENCARGADA}...")
+    fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    for url_seccion in URLS_OBJETIVO:
+    for url_base in URLS_OBJETIVO:
         try:
-            res = requests.get(url_seccion, headers=headers, timeout=10)
+            res = requests.get(url_base, headers=HEADERS, timeout=10)
             soup = BeautifulSoup(res.text, 'html.parser')
             paginas = soup.find_all('a', class_='page-number')
             max_pag = max([int(p.get_text()) for p in paginas if p.get_text().isdigit()]) if paginas else 1
             
             for p in range(1, max_pag + 1):
-                response = requests.get(f"{url_seccion}page/{p}/", headers=headers)
+                url_pag = f"{url_base}page/{p}/"
+                response = requests.get(url_pag, headers=HEADERS)
                 soup_pag = BeautifulSoup(response.text, 'html.parser')
                 bloques = soup_pag.find_all('div', class_='product-small')
-                fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 for bloque in bloques:
                     name_tag = bloque.find('p', class_='product-title')
@@ -64,11 +78,10 @@ def ejecutar_mega_extraccion():
                     if nombre in vistos or nombre == "N/A": continue
                     vistos.add(nombre)
 
-                    cat_tag = bloque.find('p', class_='product-cat')
-                    categoria_limpia = " ".join(cat_tag.get_text().split()) if cat_tag else "Varios"
-                    valor_num = extraer_precio_real(bloque)
-                    if valor_num == 0 or valor_num > 150000: continue 
+                    img_tag = bloque.find('img')
+                    url_imagen = img_tag.get('src') if img_tag else "N/A"
 
+                    # Lógica de Marca
                     nombre_up = nombre.upper()
                     marca_encontrada = "OTRA"
                     for m in MARCAS_MAESTRAS:
@@ -76,41 +89,42 @@ def ejecutar_mega_extraccion():
                             marca_encontrada = m
                             break
 
+                    precio_num = extraer_precio_real(bloque)
+                    if precio_num == 0: continue 
+
+                    cat_tag = bloque.find('p', class_='product-cat')
+                    categoria_limpia = " ".join(cat_tag.get_text().split()) if cat_tag else "Varios"
+
+                    # Ajuste solicitado: nombre_producto y precio
                     datos_finales.append({
-                        "identificador": nombre, "valor": valor_num, "supermercado": SUPERMERCADO,
-                        "categoria": categoria_limpia, "grupo": NOMBRE_GRUPO, "fecha_scraping": fecha_actual,
-                        "marca": marca_encontrada, "encargada_scraping": ENCARGADA
+                        "nombre_producto": nombre, 
+                        "precio": precio_num, 
+                        "supermercado": SUPERMERCADO,
+                        "categoria": categoria_limpia, 
+                        "fecha_captura": fecha_actual, 
+                        "marca": marca_encontrada, 
+                        "responsable": ENCARGADA,
+                        "imagen": url_imagen 
                     })
-                print(f"📂 Procesando: {url_seccion.split('/')[-2]}... ({len(datos_finales)} items)", end="\r")
+                print(f"📂 Procesando: {url_base.split('/')[-2]} Pág {p}...", end="\r")
         except: continue
 
     if datos_finales:
-        df = pd.DataFrame(datos_finales)
-        
-        # --- SUBIDA A MONGO ATLAS ---
-        try:
-            client = MongoClient(MONGO_URI)
-            db = client["Canasta_db"]["Retail_A"]
-            db.delete_many({"encargada_scraping": ENCARGADA}) 
-            db.insert_many(df.to_dict('records'), ordered=False)
-            status_mongo = "✅ REGISTRADOS EN MONGO ATLAS"
-        except Exception as e:
-            status_mongo = f"❌ ERROR ATLAS: {e}"
+        # Limpieza por responsable
+        collection.delete_many({"responsable": ENCARGADA})
+        collection.insert_many(datos_finales)
 
-        # --- REPORTE DETALLADO DE PRODUCTOS ---
-        # Configuramos pandas para que no corte las columnas y muestre todo
+        df = pd.DataFrame(datos_finales)
         pd.set_option('display.max_rows', None)
-        pd.set_option('display.max_colwidth', None)
-        pd.set_option('display.width', 1000)
+        pd.set_option('display.max_colwidth', 60)
 
         print("\n\n" + "═"*100)
-        print(f"📋 LISTADO COMPLETO DE PRODUCTOS CAPTURADOS POR: {ENCARGADA}")
+        print(f"📋 REPORTE FINAL - RESPONSABLE: {ENCARGADA}")
         print("═"*100)
-        # Imprime solo el Identificador (Nombre), Marca y Valor
-        print(df[['identificador', 'marca', 'valor']].to_string(index=False))
+        # Visualización ajustada con las nuevas cabeceras
+        print(df[['nombre_producto', 'marca', 'precio']].to_string(index=False))
         print("═"*100)
-        print(f"📊 ESTADO: {status_mongo}")
-        print(f"🎯 TOTAL PRODUCTOS: {len(df)}")
+        print(f"📊 TOTAL PRODUCTOS: {len(df)}")
         print("═"*100)
 
 if __name__ == "__main__":
