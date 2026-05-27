@@ -1,40 +1,67 @@
 services:
-  # Entorno de trabajo con Python y Spark pre-instalado
+
   workspace:
     build: .
     container_name: bigdata_workspace
     ports:
-      - "8888:8888" # Jupyter Lab
-      - "4040:4040" # Panel de control de Spark
-      - "6080:6080" 
+      - "8888:8888"
+      - "6080:6080"
+      - "4040:4040"
     volumes:
       - .:/home/jovyan/work
     environment:
-      - JUPYTER_TOKEN=
-      - JUPYTER_PASSWORD="iicg2026"
-      - JUPYTER_ALLOW_INSECURE_WRITES=true
+      - JUPYTER_ENABLE_LAB=yes
+    user: root
+    restart: always
+    networks:
+      - bigdata_net
 
-  # Base de Datos NoSQL
-  database:
-    image: mongo:latest
+  mongodb:
+    image: mongo
     container_name: bigdata_mongodb
     ports:
       - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-      
-  # EL SERVICIO QUE FALTA PARA EL PUERTO 8081
-  admin-db:
-    image: mongo-express:latest
-    container_name: bigdata_ui
     restart: always
+    networks:
+      - bigdata_net
+
+  ui_local:
+    image: mongo-express
+    container_name: bigdata_ui_local
     ports:
       - "8081:8081"
     environment:
-      # Se conecta al servicio 'database' definido arriba
-      - ME_CONFIG_MONGODB_URL=mongodb://database:27017/
+      - ME_CONFIG_MONGODB_SERVER=bigdata_mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
     depends_on:
-      - database
+      - mongodb
+    restart: always
+    networks:
+      - bigdata_net
 
-volumes:
-  mongo_data:
+  ui_atlas:
+    image: mongo-express
+    container_name: bigdata_ui_atlas
+    ports:
+      - "8083:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb+srv://FelipeGutierrez:pepe1516@cluster0.6zjv54l.mongodb.net/Canasta_db?retryWrites=true&w=majority
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+    restart: always
+    networks:
+      - bigdata_net
+
+  filebrowser:
+    image: filebrowser/filebrowser
+    container_name: bigdata_filebrowser
+    ports:
+      - "8082:80"
+    volumes:
+      - .:/srv
+    restart: always
+    networks:
+      - bigdata_net
+
+networks:
+  bigdata_net:
+    driver: bridge
