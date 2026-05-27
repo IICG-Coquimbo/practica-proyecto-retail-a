@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Instalación de JARs: Versión 10.3.0 (Compatible con Spark 3.5)
+# 2. InstalaciÃ³n de JARs: VersiÃ³n 10.3.0 (Compatible con Spark 3.5)
 # Limpiamos la carpeta primero para que no queden versiones viejas chocando
 RUN rm -f /usr/local/spark/jars/mongo-spark-connector* && \
     rm -f /usr/local/spark/jars/mongodb-driver* && \
@@ -40,7 +40,7 @@ RUN wget https://repo1.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_
     wget https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1.jar -P /usr/local/spark/jars/ && \
     wget https://repo1.maven.org/maven2/org/mongodb/bson-record-codec/4.11.1/bson-record-codec-4.11.1.jar -P /usr/local/spark/jars/
 
-# 3. Librer?as de Python para todo el curso (Scraping + Atlas + Spark)
+# 3. Librerï¿½as de Python para todo el curso (Scraping + Atlas + Spark)
 RUN pip install --no-cache-dir --upgrade pip && \
     #pip install --no-cache-dir "pymongo[srv]" dnspython certifi selenium webdriver-manager pandas
     pip install --no-cache-dir "pymongo[srv]" dnspython selenium webdriver-manager pandas certifi
@@ -48,7 +48,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
     
 
-# Variables del entorno gráfico
+# Variables del entorno grÃ¡fico
 ENV DISPLAY=:99
 ENV SCREEN_WIDTH=1368
 ENV SCREEN_HEIGHT=768
@@ -58,12 +58,12 @@ ENV SCREEN_DEPTH=24
 COPY start-vnc.sh /usr/local/bin/start-vnc.sh
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Convierte saltos de línea Windows a Linux y da permisos
+# Convierte saltos de lÃ­nea Windows a Linux y da permisos
 RUN sed -i 's/\r$//' /usr/local/bin/start-vnc.sh && chmod +x /usr/local/bin/start-vnc.sh
 
 # Puertos del contenedor
 EXPOSE 8888 5900 6080 4040
 
 # Inicia supervisord
-# Iniciamos como root para evitar el error de setuid de la sesión anterior
+# Iniciamos como root para evitar el error de setuid de la sesiÃ³n anterior
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
