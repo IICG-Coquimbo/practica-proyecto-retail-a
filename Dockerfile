@@ -40,13 +40,14 @@ RUN wget https://repo1.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_
     wget https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1.jar -P /usr/local/spark/jars/ && \
     wget https://repo1.maven.org/maven2/org/mongodb/bson-record-codec/4.11.1/bson-record-codec-4.11.1.jar -P /usr/local/spark/jars/
 
-# 3. Librer�as de Python para todo el curso (Scraping + Atlas + Spark)
+# 3. Librer as de Python para todo el curso (Scraping + Atlas + Spark)
 RUN pip install --no-cache-dir --upgrade pip && \
     #pip install --no-cache-dir "pymongo[srv]" dnspython certifi selenium webdriver-manager pandas
     pip install --no-cache-dir "pymongo[srv]" dnspython selenium webdriver-manager pandas certifi
 
-
-    
+# Instalamos Streamlit y dependencias visuales usando pip
+RUN pip install --no-cache-dir streamlit seaborn openpyxl
+   
 
 # Variables del entorno gráfico
 ENV DISPLAY=:99
