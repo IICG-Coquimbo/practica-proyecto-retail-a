@@ -1,0 +1,51 @@
+DESPENSA ACUENTA.CL
+URL: https://www.acuenta.cl/ca/despensa/05
+Páginas: 0
+Fecha: 2026-04-22 13:46:33
+
+TOTAL: 40 productos
+SUMA TOTAL: $13,704
+PROMEDIO: $343
+
+PRODUCTOS:
+------------------------------------------------------------------------------------------
+$       970 - Precio Congelado (pág 1)
+$         1 - Aceite Vegetal Botella 900 ml Acuenta (pág 1)
+$       270 - Salsa de Tomate Natural Doypack 200 g Acuenta... (pág 1)
+$         3 - Precio Congelado (pág 1)
+$         1 - Precio Congelado (pág 1)
+$         2 - Arroz Grado 1 Grano Largo Bolsa 1 kg Tucapel... (pág 1)
+$         1 - Jurel Natural Unico (pág 1)
+$         2 - Aceite Maravilla Botella 900 ml Miraflores... (pág 1)
+$       990 - Fideo Pasta Spaghetti N°5 Bolsa 400 g Carozzi... (pág 1)
+$         1 - Azúcar Rubia Granulada Bolsa 500 g Iansa (pág 1)
+$         1 - Arroz Grado 1 Grano Largo Bolsa 1 Kg Miraflores... (pág 1)
+$         1 - Mayonesa Regular Doypack 280 g Hellmanns (pág 1)
+$         1 - Atún Lomito Aceite Lata Drenado 104 g - Neto 16... (pág 1)
+$       940 - Salsa de Tomate Toscana Bolognesa Doypack 200 g... (pág 1)
+$         2 - Precio Congelado (pág 1)
+$         1 - Caballa En Agua 425 g Acuenta (pág 1)
+$       940 - Salsa de Tomate Oliva Doypack 200 g Carozzi... (pág 1)
+$         1 - Jurel Natural Lata Drenado 300 g - Neto 425 g S... (pág 1)
+$         1 - Arroz Grado 1 Grano Largo y Delgado Bolsa 1 kg ... (pág 1)
+$         2 - Endulzante Líquido Stevia Sucralosa Botella 250... (pág 1)
+$         1 - Azúcar Blanca Granulada Bolsa 1 kg Lider (pág 1)
+$         6 - Puré de Papas Instantáneo con Leche 1 Kg Lider... (pág 1)
+$         2 - Arroz Largo Ancho Grano 2 Banquete (pág 1)
+$         1 - Ketchup Regular Doypack 220 g Hellmann's (pág 1)
+$       990 - Fideo Pasta Tallarines N°87 Bolsa 400 g Carozzi... (pág 1)
+$       770 - Gelatina Frambuesa 100 g Ambrosoli (pág 1)
+$       990 - Fideo Pasta Espirales N°49 Bolsa 400 g Carozzi... (pág 1)
+$       750 - Salsa de Tomate Preparada Bolognesa Doypack 200... (pág 1)
+$         1 - Atún Agua Lata Drenado 104 g - Neto 160 g Van C... (pág 1)
+$       550 - Salsa de Tomate Italiana Doypack 200 g Lider... (pág 1)
+$       890 - Orégano Entero Deshidratado 50 g Lider (pág 1)
+$       990 - Fideo Pasta Corbatas N°80 Bolsa 400 g Carozzi... (pág 1)
+$       590 - Precio Congelado (pág 1)
+$       550 - Salsa de Tomate Natural Doypack 200 g Lider... (pág 1)
+$        14 - Harina Sin Polvos De Hornear Bolsa 25 kg Acuent... (pág 1)
+$       990 - Fideo Pasta Fettucinne N°88 Bolsa 400 g Carozzi... (pág 1)
+$       490 - Compota Mifrut Pera 90 g Vivo (pág 1)
+$         7 - Aceite Vegetal Bidón 5 L Acuenta (pág 1)
+$         1 - Porotos Negros Listos Para Servir Caja Drenado ... (pág 1)
+$       990 - Fideo Pasta Mostaccioli N°46 Bolsa 400 g Carozz... (pág 1)

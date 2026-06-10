@@ -1,0 +1,15 @@
+RESUMEN DE FIDEOS - ACUENTA.CL
+==================================================
+
+Fecha: 2026-04-16 14:59:45
+Total productos: 4
+Precio promedio: $980
+Precio mínimo: $970
+Precio máximo: $990
+
+DETALLE:
+--------------------------------------------------
+Fideo Pasta Espirales N°56 Bolsa 400 g L... $970
+Fideo Pasta Espirales N°56 Bolsa 400 g L... $970
+Fideo Pasta Spaghetti N°5 Bolsa 400 g Ca... $990
+Fideo Pasta Spaghetti N°5 Bolsa 400 g Ca... $990
